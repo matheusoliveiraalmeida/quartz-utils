@@ -16,13 +16,13 @@ public class CronExpression {
 	private String years;
 	
 	public CronExpression(String seconds, String minutes, String hours,
-			String daysOfMonth, String daysOfWeek, String months, String years){
+			String daysOfMonth, String months, String daysOfWeek, String years){
 		this.seconds = seconds;
 		this.minutes = minutes;
 		this.hours = hours;
 		this.daysOfMonth = daysOfMonth;
-		this.daysOfWeek = daysOfWeek;
 		this.months = months;
+		this.daysOfWeek = daysOfWeek;
 		this.years = years;
 	}
 

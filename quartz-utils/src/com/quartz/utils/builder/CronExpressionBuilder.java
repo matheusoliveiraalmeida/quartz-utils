@@ -1,4 +1,6 @@
-package com.quartz.utils.model;
+package com.quartz.utils.builder;
+
+import com.quartz.utils.model.CronExpression;
 
 /**
  * 
