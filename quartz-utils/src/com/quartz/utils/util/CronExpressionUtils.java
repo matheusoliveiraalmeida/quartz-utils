@@ -17,6 +17,7 @@ public class CronExpressionUtils {
 	
 	private static boolean specificDaysOfMonth;
 	private static boolean specificDaysOfWeek;
+	private static boolean specificMonths;
 	private static boolean lastDayOfMonth;
 	private static boolean lastWeekDayOfMonth;
 	private static boolean lastDayOfWeekOfMonth;
@@ -53,10 +54,56 @@ public class CronExpressionUtils {
 	 * @param every
 	 * @param startingAt
 	 * @return
-	 * 
+	 * Every (parameter every) second(s) starting at second (parameter startingAt)
 	 */
-	public static String everyIncrement(Integer every, Integer startingAt){
-		return every + "/" + startingAt;
+	public String everySecondStartingAt(Integer every, Integer startingAt){
+		if(every != null && startingAt != null){
+			if((every >= 1 || every <= 60) && (startingAt >= 0 && startingAt <= 59)){				
+				return every + "/" + startingAt;
+			}else{
+				return "0" + "/" + "1";
+			}
+		}else{
+			return "0";
+		}
+	}
+	
+	/**
+	 * 
+	 * @param every
+	 * @param startingAt
+	 * @return
+	 * Every (parameter every) minute(s) starting at minute (parameter startingAt)
+	 */
+	public String everyMinuteStartingAt(Integer every, Integer startingAt){
+		if(every != null && startingAt != null){
+			if((every >= 1 || every <= 60) && (startingAt >= 0 && startingAt <= 59)){				
+				return every + "/" + startingAt;
+			}else{
+				return "0" + "/" + "1";
+			}
+		}else{
+			return "0";
+		}
+	}
+	
+	/**
+	 * 
+	 * @param every
+	 * @param startingAt
+	 * @return
+	 * Every (parameter every) hour(s) starting at hour (parameter startingAt)
+	 */
+	public String everyHourStartingAt(Integer every, Integer startingAt){
+		if(every != null && startingAt != null){
+			if((every >= 1 || every <= 24) && (startingAt >= 0 && startingAt <= 23)){				
+				return every + "/" + startingAt;
+			}else{
+				return "0" + "/" + "1";
+			}
+		}else{
+			return "0";
+		}
 	}
 	
 	/**
@@ -136,22 +183,23 @@ public class CronExpressionUtils {
 		if(dates != null && !dates.isEmpty()){
 			String expression = "";
 			if(!specificDaysOfMonth && !lastDayOfMonth && !lastWeekDayOfMonth && !lastDayOfWeekOfMonth && !daysBeforeEndOfMonth
-					&& !nearestWeekday && !everyDayStartingInDayOfMonth){
+					&& !nearestWeekday && !everyDayStartingInDayOfMonth && !specificMonths){
 				for(Date dayOfWeek : dates){
 					if(!expression.contains(simpleDateFormat.format(dayOfWeek).toUpperCase())){
 						expression += simpleDateFormat.format(dayOfWeek).toUpperCase();
 						expression += ",";
 					}
-					specificDaysOfWeek = true;
 				}
+				specificDaysOfWeek = true;
 				return expression = expression.substring(0, expression.length() - 1);
-			}else{
+			}else if(specificDaysOfMonth){
 				System.err.println("Support for specifying both a day-of-week AND a day-of-month parameter is not implemented.");
 				return "?";
 			}
 		}else{
-			return "0";
+			return "SUN";
 		}
+		return "";
 	}
 	
 	/**
@@ -170,16 +218,17 @@ public class CronExpressionUtils {
 						expression += simpleDateFormat.format(dayOfMonth).toUpperCase();
 						expression += ",";
 					}
-					specificDaysOfMonth = true;
 				}
+				specificDaysOfMonth = true;
 				return expression = expression.substring(0, expression.length() - 1);
-			}else{
+			}else if(specificDaysOfWeek){
 				System.err.println("Support for specifying both a day-of-month AND a day-of-week parameter is not implemented.");
 				return "?";
 			}
 		}else{
-			return "0";
+			return "1";
 		}
+		return "";
 	}
 	
 	/**
@@ -192,15 +241,21 @@ public class CronExpressionUtils {
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MMM", Locale.ENGLISH);
 		if(dates != null && !dates.isEmpty()){
 			String expression = "";
-			for(Date month : dates){
-				if(!expression.contains(simpleDateFormat.format(month).toUpperCase())){
-					expression += simpleDateFormat.format(month).toUpperCase();
-					expression += ",";
+			if(!specificDaysOfWeek){
+				for(Date month : dates){
+					if(!expression.contains(simpleDateFormat.format(month).toUpperCase())){
+						expression += simpleDateFormat.format(month).toUpperCase();
+						expression += ",";
+					}
 				}
+				specificMonths = true;
+				return expression = expression.substring(0, expression.length() - 1);
+			}else{
+				System.err.println("Month values must be between 1 and 12");
+				return "?";
 			}
-			return expression = expression.substring(0, expression.length() - 1);
 		}else{
-			return "0";
+			return "1";
 		}
 	}
 	
@@ -211,8 +266,72 @@ public class CronExpressionUtils {
 	 * @return
 	 * 
 	 */
-	public static String between(Integer start, Integer end){
-		return start + "-" + end;
+	public static String everySecondBetween(Date start, Date end){
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("s");
+		if(start != null && end != null){
+			return simpleDateFormat.format(start) + "-" + simpleDateFormat.format(end);
+		}
+		return "";
+	}
+	
+	/**
+	 * 
+	 * @param start
+	 * @param end
+	 * @return
+	 * 
+	 */
+	public static String everyMinuteBetween(Date start, Date end){
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("m");
+		if(start != null && end != null){
+			return simpleDateFormat.format(start) + "-" + simpleDateFormat.format(end); 
+		}
+		return "";
+	}
+	
+	/**
+	 * 
+	 * @param start
+	 * @param end
+	 * @return
+	 * 
+	 */
+	public static String everyHourBetween(Date start, Date end){
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("H");
+		if(start != null && end != null){
+			return simpleDateFormat.format(start) + "-" + simpleDateFormat.format(end);
+		}
+		return "";
+	}
+	
+	/**
+	 * 
+	 * @param start
+	 * @param end
+	 * @return
+	 * 
+	 */
+	public static String everyMonthBetween(Date start, Date end){
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("M");
+		if(start != null && end != null){
+			return simpleDateFormat.format(start) + "-" + simpleDateFormat.format(end);
+		}
+		return "";
+	}
+	
+	/**
+	 * 
+	 * @param start
+	 * @param end
+	 * @return
+	 * 
+	 */
+	public static String everyYearBetween(Date start, Date end){
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("y");
+		if(start != null && end != null){
+			return simpleDateFormat.format(start) + "-" + simpleDateFormat.format(end);
+		}
+		return "";
 	}
 	
 	/**
