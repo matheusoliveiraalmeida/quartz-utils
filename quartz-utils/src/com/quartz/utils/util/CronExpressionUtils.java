@@ -58,7 +58,7 @@ public class CronExpressionUtils {
 	 */
 	public String everySecondStartingAt(Integer every, Integer startingAt){
 		if(every != null && startingAt != null){
-			if((every >= 1 || every <= 60) && (startingAt >= 0 && startingAt <= 59)){				
+			if((every >= 1 || every <= 60) && (startingAt >= 0 || startingAt <= 59)){				
 				return every + "/" + startingAt;
 			}else{
 				return "0" + "/" + "1";
@@ -77,7 +77,7 @@ public class CronExpressionUtils {
 	 */
 	public String everyMinuteStartingAt(Integer every, Integer startingAt){
 		if(every != null && startingAt != null){
-			if((every >= 1 || every <= 60) && (startingAt >= 0 && startingAt <= 59)){				
+			if((every >= 1 || every <= 60) && (startingAt >= 0 || startingAt <= 59)){				
 				return every + "/" + startingAt;
 			}else{
 				return "0" + "/" + "1";
@@ -96,7 +96,7 @@ public class CronExpressionUtils {
 	 */
 	public String everyHourStartingAt(Integer every, Integer startingAt){
 		if(every != null && startingAt != null){
-			if((every >= 1 || every <= 24) && (startingAt >= 0 && startingAt <= 23)){				
+			if((every >= 1 || every <= 24) && (startingAt >= 0 || startingAt <= 23)){				
 				return every + "/" + startingAt;
 			}else{
 				return "0" + "/" + "1";
